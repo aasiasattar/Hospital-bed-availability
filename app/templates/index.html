@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid-Help</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+    <br>
+    <br>
+    <div class="container-fluid">
+
+        <!--States drop down-->
+
+     <form action="" method="GET" id="filterForm">
+
+        <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="">&nbsp;Select State</label>
+                        <select name="state" id="stateSelect" class="form-control">
+                          <option value="">Select State</option>
+                           
+                          {% for state in states %}
+                          
+                          <option {% is_state_selected selected_state_id state.pk %} value={{state.pk}}>{{state}}</option>
+                         
+                          {% endfor %}
+                        
+                        </select>
+                    </div>
+
+                </div>
+
+                
+         <!--Cities drop down-->
+             <div class="col-md-4">
+                 <div class="form-group">
+                    <label for="">&nbsp;Select City</label>
+                    <select name="city" class="form-control" id="citySelect">
+                    <option value="">Select City</option>
+                    {% for city in cities %}
+                    
+                    <option {% is_city_selected selected_city_id city.pk %} value={{city.pk}}>{{city.name}}</option>
+                    
+                    {% endfor %}
+                    </select>
+                </div>
+
+
+             </div>
+
+
+             <div class="col-md-4">
+                <div class="form-group">
+                   <label for="">&nbsp;Select Facility</label>
+                   <select name="facility" class="form-control" id="facilitySelect">
+                   <option value="">Select Facility</option>
+                   {% for facility in facilities %}
+                   
+                   <option {% is_facility_selected selected_facility_id facility.pk %} value={{facility.pk}}>{{facility.title}}</option>
+                   
+                   {% endfor %}
+                   </select>
+               </div>
+
+
+            </div>
+
+        </div>  
+        <div>
+            <a href="/" class="btn btn-success">Reset</a>
+        </div> 
+    </form>     
+    <hr>
+
+       
+            
+
+     
+        <hr>
+        <table class="table text-center table-bordered table-striped">
+            <thead>
+                <tr style="background-color: bisque;">
+                    <th rowspan="2"><h4>Hospital</h4></th>
+                    {% for facility in facilities %}
+                    
+                    <th colspan="2"><h4>{{facility.title}}</h4></th>
+                   
+                    {% endfor %}
+                </tr>
+                <tr style="background-color: bisque;">
+                   
+                   {% for facility in facilities %}
+                    <th>Total</th>
+                    <th>Available</th>
+                    {% endfor %}
+                   
+                </tr>
+               
+                    
+                   
+            </thead>
+            <tbody>
+                {% for hospital in hospitals %}
+                <tr>
+                    <td style="background-color: bisque;">{{hospital.name}}</td>
+                    
+                    {% get_availabilities hospital as availabilities %}
+                    
+                    {% for avl in availabilities %}
+                    <td>{{avl.total}}</td>
+                    <td class="{%  get_table_class avl.available %}">{{avl.available}}</td>
+                    {% endfor %}
+                </tr>
+
+
+                {% endfor %}
+            </tbody>
+            
+
+        </table>
+
+    </div>
+  
+</body>
+
+<!--Java Script for State-->
+<script>
+     window.onload = function () {
+         var stateSelect = document.getElementById('stateSelect')
+         var citySelect = document.getElementById('citySelect')
+         var facilitySelect = document.getElementById('facilitySelect')
+         var form = document.getElementById('filterForm')
+
+         var formSubmit = function (){
+             form.submit();
+         }
+        
+         stateSelect.onchange = formSubmit
+         citySelect.onchange = formSubmit
+         facilitySelect.onchange = formSubmit
+        
+     }
+     
+</script>
+</html>
